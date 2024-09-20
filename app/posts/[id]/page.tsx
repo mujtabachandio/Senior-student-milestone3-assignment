@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { posts } from '../../data/posts';
 import { notFound } from 'next/navigation';
-import Image from 'next/image'; 
+import Image from 'next/image'; // Import Next.js Image component
 
 interface PostProps {
   params: {
@@ -12,14 +12,16 @@ interface PostProps {
 }
 
 const PostPage = ({ params }: PostProps) => {
+  // Always call hooks at the top, no matter what
+  const [comments, setComments] = useState<string[]>([]);
+  const [newComment, setNewComment] = useState('');
+
+  // Now we handle finding the post and potential notFound case
   const post = posts.find((p) => p.id === params.id);
 
   if (!post) {
     return notFound();
   }
-
-  const [comments, setComments] = useState<string[]>([]);
-  const [newComment, setNewComment] = useState('');
 
   const handleCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setNewComment(e.target.value);
@@ -37,12 +39,12 @@ const PostPage = ({ params }: PostProps) => {
     <div className="p-8">
       <h1 className="text-4xl font-bold mb-4">{post.title}</h1>
 
-     
+      {/* Use Next.js Image component for optimization */}
       <Image 
         src={post.image} 
         alt={post.title} 
         className="mb-4"
-        width={800} 
+        width={800} // Adjust the width and height based on your image size
         height={450} 
         layout="responsive"
       />
