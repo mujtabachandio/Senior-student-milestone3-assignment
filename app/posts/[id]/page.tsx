@@ -1,39 +1,57 @@
-"use client"
+"use client";
 
-import React, { useState } from 'react'
-import { posts } from '../../data/posts'
-import { notFound } from 'next/navigation'
+import React, { useState } from 'react';
+import { posts } from '../../data/posts';
+import { notFound } from 'next/navigation';
+import Image from 'next/image'; // Import Next.js Image component
 
 interface PostProps {
   params: {
-    id: string
-  }
+    id: string;
+  };
 }
 
 const PostPage = ({ params }: PostProps) => {
-  const post = posts.find(p => p.id === params.id)
+  // Finding the post at the top before any conditional logic
+  const post = posts.find((p) => p.id === params.id);
 
+  // Handling the case where the post is not found
   if (!post) {
-    return notFound()
+    return notFound();
   }
 
-  const [comments, setComments] = useState<string[]>([])
-  const [newComment, setNewComment] = useState('')
+  // Hooks must be called at the top of the component
+  const [comments, setComments] = useState<string[]>([]);
+  const [newComment, setNewComment] = useState('');
 
+  // Handle comment input change
   const handleCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setNewComment(e.target.value)
-  }
+    setNewComment(e.target.value);
+  };
 
+  // Handle comment submission
   const handleCommentSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    setComments([...comments, newComment])
-    setNewComment('')
-  }
+    e.preventDefault();
+    if (newComment.trim()) {
+      setComments([...comments, newComment]);
+      setNewComment('');
+    }
+  };
 
   return (
     <div className="p-8">
       <h1 className="text-4xl font-bold mb-4">{post.title}</h1>
-      <img src={post.image} alt={post.title} className="mb-4" />
+
+      {/* Use Next.js Image component for optimization */}
+      <Image 
+        src={post.image} 
+        alt={post.title} 
+        className="mb-4"
+        width={800} // Adjust the width and height based on your image size
+        height={450} 
+        layout="responsive"
+      />
+
       <p className="text-lg mb-4">{post.content}</p>
 
       <section className="mt-8">
@@ -64,7 +82,7 @@ const PostPage = ({ params }: PostProps) => {
         </ul>
       </section>
     </div>
-  )
-}
+  );
+};
 
-export default PostPage
+export default PostPage;
